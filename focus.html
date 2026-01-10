@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurevia Focus</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:linear-gradient(#0f172a,#020617);
+  color:white;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== NAV ===== */
+header{
+  background:white;
+  color:black;
+  padding:10px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+header a{
+  text-decoration:none;
+  color:black;
+  padding:6px 12px;
+  border-radius:6px;
+}
+header a.active, header a:hover{
+  background:#38bdf8;
+}
+
+/* ===== LANDSCAPE ===== */
+#scene{
+  flex:1;
+  background:linear-gradient(#60a5fa,#22c55e);
+  position:relative;
+  overflow:hidden;
+}
+
+/* mountains */
+.mountain{
+  position:absolute;
+  bottom:0;
+  width:0;height:0;
+  border-left:200px solid transparent;
+  border-right:200px solid transparent;
+  border-bottom:300px solid #1e293b;
+}
+.m2{left:200px; border-bottom-color:#334155}
+.m3{left:500px; border-bottom-color:#0f172a}
+
+/* river */
+#river{
+  position:absolute;
+  bottom:0;
+  left:45%;
+  width:80px;
+  height:100%;
+  background:linear-gradient(#38bdf8,#0ea5e9);
+  opacity:.7;
+}
+
+/* tree */
+#tree{
+  position:absolute;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:120px;
+  transition:.4s;
+}
+
+/* ===== CONTROLS ===== */
+#controls{
+  background:#020617;
+  padding:14px;
+  text-align:center;
+}
+
+#timer{
+  font-size:36px;
+  margin-bottom:6px;
+}
+
+button{
+  padding:10px 14px;
+  margin:4px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#38bdf8;
+  color:black;
+  font-weight:bold;
+}
+
+#msg{
+  margin-top:8px;
+  opacity:.9;
+}
+
+/* retro music */
+#musicBtn{
+  background:black;
+  color:#38bdf8;
+  border:2px solid #38bdf8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Aurevia Focus 🌱</div>
+  <nav>
+    <a href="ai.html">AI</a>
+    <a href="notes.html">Notes</a>
+    <a class="active">Focus</a>
+      <a href="home.html">Home</a>
+  </nav>
+</header>
+
+<div id="scene">
+  <div class="mountain"></div>
+  <div class="mountain m2"></div>
+  <div class="mountain m3"></div>
+  <div id="river"></div>
+  <div id="tree">🌱</div>
+</div>
+
+<div id="controls">
+  <div id="timer">25:00</div>
+  <button onclick="start()">Start</button>
+  <button onclick="toggleMode()">Study / Break</button>
+  <button id="musicBtn" onclick="toggleMusic()">♫ Music</button>
+  <div id="msg"></div>
+</div>
+
+<audio id="lofi" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/10/16/audio_9b3b9a2b7c.mp3">
+</audio>
+
+<script>
+let study=true;
+let time=1500;
+let interval=null;
+let rounds=0;
+
+const messages=[
+ "Stay consistent 🌿",
+ "Small steps matter",
+ "Your future self is proud",
+ "Focus beats motivation",
+ "You’re building discipline",
+ "Deep work = success",
+ "No distractions now",
+ "This is growth time",
+ "One session at a time",
+ "You got this 💙"
+];
+
+function update(){
+  const m=Math.floor(time/60).toString().padStart(2,"0");
+  const s=(time%60).toString().padStart(2,"0");
+  document.getElementById("timer").innerText=`${m}:${s}`;
+}
+
+function start(){
+  if(interval) return;
+  interval=setInterval(()=>{
+    time--;
+    update();
+
+    if(time%300===0){
+      document.getElementById("msg").innerText =
+        messages[Math.floor(Math.random()*messages.length)];
+    }
+
+    if(time<=0){
+      clearInterval(interval);
+      interval=null;
+
+      if(study){
+        rounds++;
+        document.getElementById("tree").style.fontSize=
+          120+rounds*15+"px";
+        toggleMode();
+      }else{
+        toggleMode();
+      }
+    }
+  },1000);
+}
+
+function toggleMode(){
+  clearInterval(interval);
+  interval=null;
+  study=!study;
+  time=study?1500:300;
+  document.getElementById("msg").innerText=
+    study?"Study Time 🌱":"Break Time ☕";
+  update();
+}
+
+function toggleMusic(){
+  const a=document.getElementById("lofi");
+  a.paused?a.play():a.pause();
+}
+
+update();
+</script>
+
+</body>
+</html>

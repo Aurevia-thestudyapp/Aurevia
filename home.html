@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurevia - The Study Partner</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* --- GLOBAL --- */
+* { box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif; }
+body { background:#111; color:white; line-height:1.5; scroll-behavior:smooth; }
+a { text-decoration:none; color:inherit; }
+
+/* --- HEADER --- */
+header {
+  position: sticky;
+  top:0;
+  background: #111;
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 2.5rem;
+  text-align: center;
+  letter-spacing: 2px;
+  padding: 20px 0;
+  text-shadow: 0 0 10px rgba(255,215,0,0.5), 0 0 20px rgba(255,215,0,0.3);
+  z-index:100;
+}
+header span { font-size:1.2rem; font-weight:400; display:block; color:#eee; letter-spacing:0; margin-top:5px; text-shadow:none; }
+
+/* ===== NAV ===== */
+header{
+  background:white;
+  color:black;
+  padding:10px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+header a{
+  text-decoration:none;
+  color:black;
+  padding:6px 12px;
+  border-radius:6px;
+}
+header a.active, header a:hover{
+  background:#38bdf8;
+}
+
+
+/* --- MAIN SECTION --- */
+main {
+  max-width:1200px;
+  margin:50px auto 100px auto;
+  padding:0 15px;
+}
+
+/* --- INTRO --- */
+.intro {
+  text-align:center;
+  margin-bottom:50px;
+}
+.intro img {
+  width:150px;
+  height:150px;
+  object-fit:cover;
+  border-radius:50%;
+  border:4px solid #ffd700;
+  margin-bottom:20px;
+}
+.intro p {
+  font-size:1.1rem;
+  color:#ddd;
+}
+
+/* --- FEATURE CARDS --- */
+.features {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-around;
+  gap:20px;
+}
+.feature-card {
+  background:#1f1f1f;
+  border:2px solid #ffd700;
+  border-radius:15px;
+  flex:1 1 280px;
+  max-width:350px;
+  padding:20px;
+  text-align:center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow:0 10px 30px rgba(255,215,0,0.4);
+}
+.feature-card h2 { color:#ffd700; margin-bottom:10px; }
+.feature-card p { color:#eee; font-size:0.95rem; }
+
+/* --- FOOTER --- */
+footer {
+  text-align:center;
+  padding:20px;
+  color:#aaa;
+  border-top:1px solid #333;
+}
+
+/* --- MOBILE --- */
+@media(max-width:768px){
+  .features { flex-direction:column; align-items:center; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div>Aurevia HOME</div>
+  <nav>
+    <a href="ai.html">AI</a>
+    <a href="notes.html">Notes</a>
+    <a class="active">HOME</a>
+      <a href="focus.html">focus</a>
+  </nav>
+</header>
+
+
+
+<div class="navbar">
+  <a href="ai.html">AI Chat</a>
+  <a href="notes.html">Notes</a>
+  <a href="focus.html">Focus Timer</a>
+</div>
+
+<main>
+  <!-- INTRO -->
+  <div class="intro">
+    <img src="me.jpg" alt="My Photo">
+    <p>Hi! I'm a 12-year-old kid passionate about creating Aurevia, a study app that blends learning, productivity, and fun. Starting at this age, only ~0.1% of kids build real apps, so welcome to my unique journey!</p>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="feature-card">
+      <h2>AI Chat</h2>
+      <p>Ask questions, get explanations, and learn interactively with an AI study assistant built into Aurevia.</p>
+    </div>
+    <div class="feature-card">
+      <h2>Notes & Diary</h2>
+      <p>Keep organized digital notes, journals, and planners. Annotate PDFs, add images, and track your progress.</p>
+    </div>
+    <div class="feature-card">
+      <h2>Focus Timer</h2>
+      <p>Boost productivity with Pomodoro-style timers, break reminders, fun growing tree visualization, and lofi beats.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 Aurevia | Built with ❤️ by a 12-year-old innovator
+</footer>
+
+</body>
+</html>

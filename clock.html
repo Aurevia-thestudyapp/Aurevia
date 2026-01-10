@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clock & Reminders</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="navbar">
+  <a href="index.html">AI</a>
+  <a href="notes.html">Notes</a>
+  <a href="clock.html">Clock</a>
+</div>
+
+
+
+<h1 class="page-title">Clock & Reminders</h1>
+
+<div class="container">
+  <div id="clock" style="font-size:2rem;"></div>
+
+  <input id="reminderInput" placeholder="Type reminder..." />
+  <button onclick="addReminder()">Set Reminder</button>
+
+  <div id="reminderList"></div>
+</div>
+
+<script src="js/clock.js"></script>
+</body>
+</html>

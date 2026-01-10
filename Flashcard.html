@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurevia Flashcards</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#111;
+  color:white;
+}
+
+/* Header */
+header{
+  height:52px;
+  background:white;
+  color:black;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  font-weight:600;
+}
+
+header nav a{
+  margin:0 8px;
+  text-decoration:none;
+  color:black;
+  padding:6px 12px;
+  border-radius:6px;
+}
+
+/* Input Area */
+textarea, input {
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+
+button {
+  background:#ffd700;
+  color:#111;
+  border:none;
+  padding:12px 20px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+  margin:10px 5px 20px 0;
+}
+
+button:hover {
+  opacity:0.9;
+}
+
+/* Flashcards */
+.flashcards {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.card {
+  perspective:1000px;
+}
+
+.card-inner {
+  position:relative;
+  width:100%;
+  height:160px;
+  transition:transform 0.6s;
+  transform-style:preserve-3d;
+  cursor:pointer;
+}
+
+.card.flipped .card-inner {
+  transform:rotateY(180deg);
+}
+
+.card-face {
+  position:absolute;
+  width:100%;
+  height:100%;
+  backface-visibility:hidden;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  text-align:center;
+}
+
+.front {
+  background:white;
+  color:#111;
+}
+
+.back {
+  background:#222;
+  color:#ffd700;
+  transform:rotateY(180deg);
+}
+
+/* Quiz Area */
+#quizBox {
+  margin-top:40px;
+  background:#1c1c1c;
+  border:2px solid #ffd700;
+  padding:20px;
+  border-radius:15px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+<main><header>
+  <div>Aurevia ✨</div>
+  <nav>
+    <a class="active">Flashcards</a>
+    <a href="notes.html">Notes</a>
+    <a href="focus.html">Focus</a>
+    <a href="home.html">Home</a>
+    <a href="ai.html">AI</a>
+  </nav>
+</header>
+
+<input id="topic" placeholder="Topic (e.g. Photosynthesis)">
+<textarea id="content" rows="6" placeholder="Paste your notes here..."></textarea>
+
+<button onclick="addFlashcard()">➕ Add Flashcard</button>
+<button onclick="generateQuiz()">🤖 Generate AI Quiz</button>
+
+<div class="flashcards" id="cards"></div>
+
+<div id="quizBox" style="display:none;">
+  <h3>AI Quiz</h3>
+  <pre id="quizText"></pre>
+</div>
+
+</main>
+
+<script>
+let cards = JSON.parse(localStorage.getItem("aurevia_cards") || "[]");
+
+function saveCards() {
+  localStorage.setItem("aurevia_cards", JSON.stringify(cards));
+}
+
+function renderCards() {
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  cards.forEach((c,i)=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face front">${c.front}</div>
+        <div class="card-face back">${c.back}</div>
+      </div>`;
+    card.onclick = ()=> card.classList.toggle("flipped");
+    container.appendChild(card);
+  });
+}
+
+function addFlashcard() {
+  const text = document.getElementById("content").value.trim();
+  if(!text) return alert("Add content first!");
+
+  const lines = text.split("\n").filter(l=>l.trim());
+  lines.forEach(l=>{
+    cards.push({
+      front: l,
+      back: "Tap to reveal"
+    });
+  });
+
+  saveCards();
+  renderCards();
+}
+
+async function generateQuiz() {
+  const content = document.getElementById("content").value;
+  if(!content) return alert("Add content first!");
+
+  document.getElementById("quizBox").style.display="block";
+  document.getElementById("quizText").innerText="Generating quiz...";
+
+  try {
+    const res = await fetch("http://localhost:3000/ask-ai",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        question:`Create 5 quiz questions with answers from this content:\n${content}`
+      })
+    });
+    const data = await res.json();
+    document.getElementById("quizText").innerText = data.answer;
+  } catch {
+    document.getElementById("quizText").innerText="AI error.";
+  }
+}
+
+renderCards();
+</script>
+
+</body>
+</html>

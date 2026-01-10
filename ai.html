@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aurevia AI</title>
+
+<style>
+:root{
+  --accent:#38bdf8;
+  --bg:#0f172a;
+  --panel:#111827;
+  --soft:#1f2933;
+  --white:#ffffff;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family: "Inter", system-ui, sans-serif;
+  background:var(--bg);
+  color:white;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== TOP NAV ===== */
+header{
+  height:52px;
+  background:white;
+  color:black;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  font-weight:600;
+}
+
+header nav a{
+  margin:0 8px;
+  text-decoration:none;
+  color:black;
+  padding:6px 12px;
+  border-radius:6px;
+}
+
+header nav a.active,
+header nav a:hover{
+  background:var(--accent);
+}
+
+/* ===== LAYOUT ===== */
+#main{
+  flex:1;
+  display:flex;
+  overflow:hidden;
+}
+
+/* ===== SIDEBAR ===== */
+#sidebar{
+  width:220px;
+  background:var(--panel);
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+}
+
+#sidebar input{
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  margin-bottom:8px;
+}
+
+#sessions{
+  flex:1;
+  overflow-y:auto;
+}
+
+.session{
+  background:var(--soft);
+  padding:8px;
+  border-radius:8px;
+  margin-bottom:6px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+}
+
+.session span{
+  font-size:14px;
+}
+
+.session .icons{
+  display:flex;
+  gap:6px;
+}
+
+.session .icons button{
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+/* ===== CHAT ===== */
+#chat{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding:12px;
+}
+
+#messages{
+  flex:1;
+  overflow-y:auto;
+}
+
+.msg{
+  max-width:78%;
+  padding:10px 12px;
+  border-radius:12px;
+  margin-bottom:8px;
+  line-height:1.4;
+}
+
+.user{
+  background:var(--accent);
+  color:black;
+  align-self:flex-end;
+}
+
+.ai{
+  background:#1e293b;
+  align-self:flex-start;
+  position:relative;
+}
+
+.pin{
+  position:absolute;
+  right:6px;
+  top:6px;
+  cursor:pointer;
+}
+
+/* ===== INPUT ===== */
+#inputBar{
+  display:flex;
+  margin-top:8px;
+}
+
+#inputBar input{
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+}
+
+#inputBar button{
+  margin-left:6px;
+  padding:12px 16px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  cursor:pointer;
+}
+
+/* MOBILE */
+@media(max-width:700px){
+  #sidebar{width:160px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Aurevia ✨</div>
+  <nav>
+    <a class="active">AI</a>
+    <a href="notes.html">Notes</a>
+    <a href="focus.html">Focus</a>
+    <a href="home.html">Home</a>
+  </nav>
+</header>
+
+<div id="main">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <input placeholder="Search chats…" oninput="searchChats(this.value)" />
+  <button onclick="newChat()">+ New Chat</button>
+  <div id="sessions"></div>
+</div>
+
+<!-- CHAT -->
+<div id="chat">
+  <div id="messages"></div>
+
+  <div id="inputBar">
+    <input id="input" placeholder="Ask Aurevia…" />
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let chats = JSON.parse(localStorage.getItem("aureviaChats")||"[]");
+let current = localStorage.getItem("aureviaCurrent") ?? -1;
+
+/* ===== CHAT MGMT ===== */
+function save(){
+  localStorage.setItem("aureviaChats",JSON.stringify(chats));
+  localStorage.setItem("aureviaCurrent",current);
+}
+
+function newChat(){
+  chats.push({name:`Chat ${chats.length+1}`,messages:[]});
+  current=chats.length-1;
+  save(); render();
+}
+
+function renameChat(i){
+  const n=prompt("Rename chat",chats[i].name);
+  if(n){chats[i].name=n; save(); render();}
+}
+
+function searchChats(q){
+  document.querySelectorAll(".session").forEach(s=>{
+    s.style.display=s.innerText.toLowerCase().includes(q.toLowerCase())?"flex":"none";
+  });
+}
+
+/* ===== RENDER ===== */
+function render(){
+  const s=document.getElementById("sessions");
+  s.innerHTML="";
+  chats.forEach((c,i)=>{
+    const d=document.createElement("div");
+    d.className="session";
+    d.onclick=()=>{current=i; save(); renderMessages();};
+
+    // long press rename (mobile)
+    let press;
+    d.onmousedown=()=>press=setTimeout(()=>renameChat(i),600);
+    d.onmouseup=()=>clearTimeout(press);
+
+    d.innerHTML=`
+      <span>${c.name}</span>
+      <div class="icons">
+        <button onclick="event.stopPropagation();renameChat(${i})">✏️</button>
+      </div>`;
+    s.appendChild(d);
+  });
+  renderMessages();
+}
+
+function renderMessages(){
+  const m=document.getElementById("messages");
+  m.innerHTML="";
+  if(current<0)return;
+  chats[current].messages.forEach(msg=>{
+    const d=document.createElement("div");
+    d.className="msg "+msg.role;
+    d.innerText=msg.text;
+    if(msg.role==="ai"){
+      const p=document.createElement("span");
+      p.className="pin";
+      p.innerText="📌";
+      p.onclick=()=>alert("Pinned (Phase 2.5)");
+      d.appendChild(p);
+    }
+    m.appendChild(d);
+  });
+  m.scrollTop=m.scrollHeight;
+}
+
+/* ===== SEND ===== */
+async function send(){
+  const i=document.getElementById("input");
+  if(!i.value||current<0)return;
+  chats[current].messages.push({role:"user",text:i.value});
+  const q=i.value;
+  i.value="";
+  render(); save();
+
+  chats[current].messages.push({role:"ai",text:"Thinking..."});
+  render();
+
+  try{
+    const r=await fetch("http://localhost:3000/ask-ai",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({question:q})
+    });
+    const d=await r.json();
+    chats[current].messages.pop();
+    chats[current].messages.push({role:"ai",text:d.answer});
+  }catch{
+    chats[current].messages.pop();
+    chats[current].messages.push({role:"ai",text:"⚠️ AI unavailable"});
+  }
+  save(); render();
+}
+
+/* INIT */
+render();
+</script>
+
+</body>
+</html>

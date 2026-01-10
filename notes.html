@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurevia Diary</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Georgia", serif;
+  background:#0f172a;
+  color:#2b1d0e;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* ===== TOP NAV ===== */
+header{
+  background:white;
+  padding:10px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+header a{
+  text-decoration:none;
+  color:black;
+  padding:6px 12px;
+  border-radius:6px;
+}
+
+header a:hover, header a.active{
+  background:#38bdf8;
+}
+
+/* ===== DIARY ===== */
+#diaryWrap{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+#page{
+  width:100%;
+  max-width:700px;
+  height:100%;
+  max-height:600px;
+  background:#f7e7b3;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.05) 0px,
+      rgba(0,0,0,0.05) 1px,
+      transparent 28px
+    );
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  border-radius:12px;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* crumbled texture */
+#page::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  opacity:0.25;
+  pointer-events:none;
+}
+
+#dateBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
+#dateBar button{
+  background:#2b1d0e;
+  color:#f7e7b3;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+textarea{
+  flex:1;
+  background:transparent;
+  border:none;
+  resize:none;
+  font-size:18px;
+  line-height:28px;
+  outline:none;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  textarea{font-size:16px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>Aurevia Diary 📖</div>
+  <nav>
+    <a href="ai.html">AI</a>
+    <a class="active">Notes</a>
+    <a href="focus.html">Focus</a>
+      <a href="home.html">Home</a>
+  </nav>
+</header>
+
+<div id="diaryWrap">
+  <div id="page">
+    <div id="dateBar">
+      <button onclick="changeDay(-1)">◀</button>
+      <div id="dateText"></div>
+      <button onclick="changeDay(1)">▶</button>
+    </div>
+
+    <textarea id="entry" placeholder="Dear diary..."></textarea>
+  </div>
+</div>
+
+<script>
+let dayOffset = 0;
+
+function getKey(){
+  const d = new Date();
+  d.setDate(d.getDate()+dayOffset);
+  return "diary-"+d.toDateString();
+}
+
+function load(){
+  const d = new Date();
+  d.setDate(d.getDate()+dayOffset);
+  document.getElementById("dateText").innerText =
+    d.toDateString();
+
+  document.getElementById("entry").value =
+    localStorage.getItem(getKey()) || "";
+}
+
+function save(){
+  localStorage.setItem(getKey(),
+    document.getElementById("entry").value);
+}
+
+function changeDay(n){
+  save();
+  dayOffset+=n;
+  load();
+}
+
+document.getElementById("entry").addEventListener("input",save);
+
+load();
+</script>
+
+</body>
+</html>
