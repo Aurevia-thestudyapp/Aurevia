@@ -292,7 +292,8 @@ async function send(){
   render();
 
   try{
-    const r=await fetch("http://localhost:3000/ask-ai",{
+    const r=await fetch("https://aurevia-ai-backend.onrender.com/ask-ai"
+,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({question:q})
@@ -313,3 +314,4 @@ render();
 
 </body>
 </html>
+
