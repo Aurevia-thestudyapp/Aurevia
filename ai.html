@@ -291,22 +291,23 @@ async function send(){
   chats[current].messages.push({role:"ai",text:"Thinking..."});
   render();
 
-  try{
-    const r=await fetch("https://dashboard.render.com/web/srv-d5kf7mcoud1c73eiman0/logs?r=1h
-,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({question:q})
-    });
-    const d=await r.json();
-    chats[current].messages.pop();
-    chats[current].messages.push({role:"ai",text:d.answer});
-  }catch{
-    chats[current].messages.pop();
-    chats[current].messages.push({role:"ai",text:"⚠️ AI unavailable"});
-  }
-  save(); render();
-}
+  fetch("https://aurevia-7sxo.onrender.com/ask-ai", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    question: userMessage
+  })
+})
+.then(res => res.json())
+.then(data => {
+  addMessage("ai", data.reply);
+})
+.catch(err => {
+  addMessage("ai", "⚠️ AI is sleeping, try again in 10 sec");
+});
+
 
 /* INIT */
 render();
@@ -314,5 +315,6 @@ render();
 
 </body>
 </html>
+
 
 
