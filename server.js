@@ -50,7 +50,7 @@ app.post("/ask-ai", async (req, res) => {
   }
 
   try {
-    console.log("🚀 Sending request to OpenAI...");
+    console.log("🚀 Sending request to Aurevia...");
 
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -97,6 +97,9 @@ app.post("/ask-ai", async (req, res) => {
 // =====================
 // START SERVER
 // =====================
-app.listen(PORT, () => {
-  console.log(`AI Server running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`AI Server running on port ${PORT}`);
 });
+
