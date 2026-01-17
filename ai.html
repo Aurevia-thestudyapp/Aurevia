@@ -206,18 +206,12 @@ header nav a:hover{
   </div>
 </div>
 
-</div>
-<script>
+</div><script>
+/* paste ONLY THIS PART ↓ */
+
 let chats = JSON.parse(localStorage.getItem("aureviaChats") || "[]");
 let current = Number(localStorage.getItem("aureviaCurrent") ?? -1);
 
-/* ===== SAVE ===== */
-function save() {
-  localStorage.setItem("aureviaChats", JSON.stringify(chats));
-  localStorage.setItem("aureviaCurrent", current);
-}
-
-/* ===== NEW CHAT ===== */
 function newChat() {
   chats.push({ name: `Chat ${chats.length + 1}`, messages: [] });
   current = chats.length - 1;
@@ -225,103 +219,15 @@ function newChat() {
   render();
 }
 
-/* ===== RENAME ===== */
-function renameChat(i) {
-  const n = prompt("Rename chat", chats[i].name);
-  if (n) {
-    chats[i].name = n;
-    save();
-    render();
-  }
+function send() {
+  console.log("send works");
 }
 
-/* ===== RENDER SESSIONS ===== */
-function render() {
-  const s = document.getElementById("sessions");
-  s.innerHTML = "";
-
-  chats.forEach((c, i) => {
-    const d = document.createElement("div");
-    d.className = "session";
-    d.onclick = () => {
-      current = i;
-      save();
-      renderMessages();
-    };
-
-    d.innerHTML = `
-      <span>${c.name}</span>
-      <button onclick="event.stopPropagation();renameChat(${i})">✏️</button>
-    `;
-
-    s.appendChild(d);
-  });
-
-  renderMessages();
-}
-
-/* ===== RENDER MESSAGES ===== */
-function renderMessages() {
-  const m = document.getElementById("messages");
-  m.innerHTML = "";
-
-  if (current < 0) return;
-
-  chats[current].messages.forEach(msg => {
-    const d = document.createElement("div");
-    d.className = "msg " + msg.role;
-    d.innerText = msg.text;
-    m.appendChild(d);
-  });
-
-  m.scrollTop = m.scrollHeight;
-}
-
-/* ===== SEND MESSAGE ===== */
-async function send() {
-  const input = document.getElementById("input");
-  const text = input.value.trim();
-  if (!text || current < 0) return;
-
-  input.value = "";
-
-  chats[current].messages.push({ role: "user", text });
-  chats[current].messages.push({ role: "ai", text: "Thinking..." });
-  renderMessages();
-  save();
-
-  try {
-    const res = await fetch("https://aurevia-7sxo.onrender.com/ask-ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: text })
-    });
-
-    const data = await res.json();
-    chats[current].messages.pop();
-    chats[current].messages.push({
-      role: "ai",
-      text: data.answer || data.reply || "No response"
-    });
-
-  } catch (e) {
-    chats[current].messages.pop();
-    chats[current].messages.push({
-      role: "ai",
-      text: "⚠️ AI unavailable"
-    });
-  }
-
-  renderMessages();
-  save();
-}
-
-/* ===== INIT ===== */
-render();
+/* paste ONLY THIS PART ↑ */
 </script>
-
 </body>
 </html>
+
 
 
 
