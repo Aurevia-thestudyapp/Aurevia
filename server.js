@@ -97,9 +97,8 @@ app.post("/ask-ai", async (req, res) => {
 // =====================
 // START SERVER
 // =====================
-const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`AI Server running on port ${PORT}`);
 });
+
 
