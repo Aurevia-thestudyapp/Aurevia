@@ -206,27 +206,25 @@ header nav a:hover{
   </div>
 </div>
 
-</div><script>
-/* paste ONLY THIS PART ↓ */
-
+</div>
+<script>
 let chats = JSON.parse(localStorage.getItem("aureviaChats") || "[]");
 let current = Number(localStorage.getItem("aureviaCurrent") ?? -1);
 
 function newChat() {
   chats.push({ name: `Chat ${chats.length + 1}`, messages: [] });
   current = chats.length - 1;
-  save();
-  render();
+  console.log("New chat created", chats);
 }
 
 function send() {
-  console.log("send works");
+  console.log("Send works");
 }
-
-/* paste ONLY THIS PART ↑ */
 </script>
+
 </body>
 </html>
+
 
 
 
